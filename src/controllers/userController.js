@@ -30,7 +30,7 @@ exports.registerUser = async (req, res, next) => {
     }
     const passwordHash = await bcrypt.hash(password, 12);
     const result = await pool.query(
-      `INSERT INTO users (name, email, password_hash, phone, role, neighbor_id)
+      `INSERT INTO users (name, email, password, phone, role, neighbor_id)
        VALUES ($1, $2, $3, $4, $5, $6)
        RETURNING id, name, email, created_at, updated_at`,
       [name, normalizedEmail, passwordHash, phone, role, neighbor_id],
@@ -59,14 +59,14 @@ exports.login = async (req, res, next) => {
     }
 
     const result = await pool.query(
-      `SELECT id, name, email, password_hash, created_at, updated_at
+      `SELECT id, name, email, password, created_at, updated_at
        FROM users WHERE email = $1`,
       [email.trim().toLowerCase()],
     );
 
     const user = result.rows[0];
     const passwordMatches = user
-      ? await bcrypt.compare(password, user.password_hash)
+      ? await bcrypt.compare(password, user.password)
       : false;
 
     if (!user || !passwordMatches) {
