@@ -1,4 +1,5 @@
 const express = require("express");
+const authMiddleware = require("../middleware/authMiddleware");
 const {
   getAllItems,
   getItemById,
@@ -9,9 +10,9 @@ const {
 
 const router = express.Router();
 
-router.get("/", getAllItems);
-router.get("/:id", getItemById);
-router.post("/", insertItem);
-router.put("/:id", updateItem);
-router.delete("/:id", deleteItem);
+router.get("/", authMiddleware, getAllItems);
+router.get("/:id", authMiddleware, getItemById);
+router.post("/", authMiddleware, insertItem);
+router.put("/:id", authMiddleware, updateItem);
+router.delete("/:id", authMiddleware, deleteItem);
 module.exports = router;
